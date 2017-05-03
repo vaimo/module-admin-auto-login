@@ -1,0 +1,10 @@
+{
+    "name": "vaimo/module-admin-auto-login",
+    "type": "magento2-module",
+    "authors": [
+        {
+            "name": "Rafael Kassner",
+            "email": "rafael.kassner@vaimo.com"
+        }
+    ]
+}
