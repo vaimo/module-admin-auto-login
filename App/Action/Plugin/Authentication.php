@@ -111,8 +111,14 @@ class Authentication
 
         $this->autoLogin($request, $this->getLoginUsername());
 
+        if ($request instanceof \Magento\Framework\App\Request\Http) {
+            $routePath = sprintf('%s/%s/%s', $request->getRouteName(), $request->getControllerName(), $request->getActionName());
+        } else {
+            $routePath = 'adminhtml/dashboard';
+        }
+
         $resultRedirect = $this->resultRedirectFactory->create();
-        return $resultRedirect->setUrl($this->backendUrl->getUrl('adminhtml/dashboard'));
+        return $resultRedirect->setUrl($this->backendUrl->getUrl($routePath));
     }
 
     /**
