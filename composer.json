@@ -2,7 +2,7 @@
     "name": "vaimo/module-admin-auto-login",
     "type": "magento2-module",
     "require": {
-        "magento/framework": "100.*"
+        "magento/framework": "*"
     },
     "autoload": {
         "files": ["registration.php"],
