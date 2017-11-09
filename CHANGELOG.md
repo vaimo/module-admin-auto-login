@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [1.4.0] - 2017-11-09
+### Added
+- Support for Magento 2.2
+
 ## [1.3.0] - 2017-05-08
 ### Added
 - Public release
