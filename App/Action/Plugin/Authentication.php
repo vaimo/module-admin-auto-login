@@ -30,7 +30,7 @@ class Authentication
         'logout',
         'refresh', // captcha refresh
     ];
-
+    
     /**
      * @var \Magento\Backend\Model\Auth
      */
@@ -66,6 +66,15 @@ class Authentication
      */
     private $adminUserSource;
 
+    /**
+     * @param \Magento\Backend\Model\Auth $auth
+     * @param \Magento\Backend\Model\UrlInterface $backendUrl
+     * @param \Magento\Framework\Event\ManagerInterface $eventManager
+     * @param \Magento\Framework\Data\Collection\ModelFactory $modelFactory
+     * @param \Magento\Framework\Controller\Result\RedirectFactory $resultRedirectFactory
+     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+     * @param \Vaimo\AdminAutoLogin\Model\Config\Source\AdminUser $adminUserSource
+     */
     public function __construct(
         \Magento\Backend\Model\Auth $auth,
         \Magento\Backend\Model\UrlInterface $backendUrl,
@@ -159,13 +168,18 @@ class Authentication
      */
     private function autoLogin(\Magento\Framework\App\RequestInterface $request, $username)
     {
+        /** @var \Magento\Backend\Model\Auth\Session $authStorage */
         $authStorage = $this->auth->getAuthStorage();
         $user = $this->modelFactory->create('\Magento\Backend\Model\Auth\Credential\StorageInterface');
-
-        $this->eventManager->dispatch('admin_user_authenticate_before', [
-            'username' => $username,
-            'user' => $user,
-        ]);
+        
+        try {
+            $this->eventManager->dispatch('admin_user_authenticate_before', [
+                'username' => $username,
+                'user' => $user,
+            ]);   
+        } catch (\Magento\Framework\Exception\Plugin\AuthenticationException $exception) {
+            // Pass over exceptions that are thrown by potential other authentication extensions 
+        }
 
         $user->loadByUsername($username);
 
@@ -198,6 +212,10 @@ class Authentication
         // Handle login
         $user->getResource()->recordLogin($user);
         $authStorage->setUser($user);
+        $namespace = $authStorage->getNamespace();
+        
+        $_SESSION[$namespace]['user'] = $user;
+        
         $authStorage->processLogin();
         $this->eventManager->dispatch('backend_auth_user_login_success', ['user' => $user]);
         $this->populateAdminUserSessionTable($this->auth);
