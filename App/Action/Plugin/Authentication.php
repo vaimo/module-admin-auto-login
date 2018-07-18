@@ -118,7 +118,7 @@ class Authentication
         }
 
         $resultRedirect = $this->resultRedirectFactory->create();
-        return $resultRedirect->setUrl($this->backendUrl->getUrl($routePath));
+        return $resultRedirect->setUrl($this->backendUrl->getUrl($routePath, $request->getParams()));
     }
 
     /**
