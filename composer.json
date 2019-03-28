@@ -1,10 +1,18 @@
 {
     "name": "vaimo/module-admin-auto-login",
+    "description": "Provides automatic admin login on Magento projects; Useful addition when working with a project locally (should be used only as require-dev)",
     "type": "magento2-module",
     "license": "Apache-2.0",
     "require": {
         "magento/framework": "100.* | 101.* | 102.0.*"
     },
+    "keywords": [
+        "admin",
+        "development",
+        "helper",
+        "login",
+        "convenience"
+    ],
     "autoload": {
         "files": ["registration.php"],
         "psr-4": {
