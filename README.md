@@ -1,6 +1,6 @@
 # vaimo/module-admin-auto-login
 
-[![Latest Stable Version](https://poser.pugx.org/vaimo/composer-patches/v/stable)](https://packagist.org/packages/vaimo/composer-patches)
+[![Latest Stable Version](https://poser.pugx.org/vaimo/module-admin-auto-login/v/stable)](https://packagist.org/packages/vaimo/module-admin-auto-login)
 [![Total Downloads](https://poser.pugx.org/vaimo/module-admin-auto-login/downloads)](https://packagist.org/packages/vaimo/module-admin-auto-login)
 [![Daily Downloads](https://poser.pugx.org/vaimo/module-admin-auto-login/d/daily)](https://packagist.org/packages/vaimo/module-admin-auto-login)
 [![License](https://poser.pugx.org/vaimo/module-admin-auto-login/license)](https://packagist.org/packages/vaimo/module-admin-auto-login)
