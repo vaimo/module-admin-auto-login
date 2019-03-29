@@ -1,5 +1,11 @@
 # vaimo/module-admin-auto-login
 
+[![GitHub release](https://img.shields.io/github/release/vaimo/cmodule-admin-auto-login.svg)](https://github.com/vaimo/module-admin-auto-login/releases/latest)
+[![Total Downloads](https://poser.pugx.org/vaimo/module-admin-auto-login/downloads)](https://packagist.org/packages/vaimo/module-admin-auto-login)
+[![Daily Downloads](https://poser.pugx.org/vaimo/module-admin-auto-login/d/daily)](https://packagist.org/packages/vaimo/module-admin-auto-login)
+[![Minimum PHP Version](https://img.shields.io/packagist/php-v/vaimo/module-admin-auto-login.svg)](https://php.net/)
+[![License](https://poser.pugx.org/vaimo/module-admin-auto-login/license)](https://packagist.org/packages/vaimo/module-admin-auto-login)
+
 This module bypasses the admin panel login screen, automatically logging in as
 the user provided in the configuration. Since it doesn't run any validations,
 this module should be used only on local environments (i.e.: not public).
