@@ -1,13 +1,16 @@
 <?php
 /**
- * Copyright © 2009-2017 Vaimo Group. All rights reserved.
+ * Copyright © Vaimo Group. All rights reserved.
  * See LICENSE for license details.
  */
-
 namespace Vaimo\AdminAutoLogin\App\Action\Plugin;
 
 use Magento\Framework\Exception\AuthenticationException;
 use Magento\Framework\Exception\State\UserLockedException;
+use function in_array;
+use function sprintf;
+use function array_keys;
+use function reset;
 
 class Authentication
 {
@@ -15,7 +18,7 @@ class Authentication
     /**
      * Default usernames to attempt login if there is no configuration
      */
-    const DEFAULT_USERNAMES = [
+    private const DEFAULT_USERNAMES = [
         'jambi',
         'admin',
     ];
@@ -23,7 +26,7 @@ class Authentication
     /**
      * Controller actions that must be reachable without authentication
      */
-    const CONTROLLER_ACTIONS_OPEN = [
+    private const CONTROLLER_ACTIONS_OPEN = [
         'forgotpassword',
         'resetpassword',
         'resetpasswordpost',
@@ -66,6 +69,17 @@ class Authentication
      */
     private $adminUserSource;
 
+    /**
+     * Authentication constructor.
+     *
+     * @param \Magento\Backend\Model\Auth $auth
+     * @param \Magento\Backend\Model\UrlInterface $backendUrl
+     * @param \Magento\Framework\Event\ManagerInterface $eventManager
+     * @param \Magento\Framework\Data\Collection\ModelFactory $modelFactory
+     * @param \Magento\Framework\Controller\Result\RedirectFactory $resultRedirectFactory
+     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+     * @param \Vaimo\AdminAutoLogin\Model\Config\Source\AdminUser $adminUserSource
+     */
     public function __construct(
         \Magento\Backend\Model\Auth $auth,
         \Magento\Backend\Model\UrlInterface $backendUrl,
@@ -84,6 +98,16 @@ class Authentication
         $this->adminUserSource = $adminUserSource;
     }
 
+    /**
+     * @param \Magento\Framework\App\ActionInterface $subject
+     * @param \Closure $proceed
+     * @param \Magento\Framework\App\RequestInterface $request
+     *
+     * @return \Magento\Framework\Controller\Result\Redirect|mixed
+     * @throws AuthenticationException
+     * @throws UserLockedException
+     * @throws \Exception
+     */
     public function aroundDispatch(
         \Magento\Framework\App\ActionInterface $subject,
         \Closure $proceed,
@@ -95,7 +119,7 @@ class Authentication
 
         $requestedActionName = $request->getActionName();
 
-        if (in_array($requestedActionName, self::CONTROLLER_ACTIONS_OPEN)) {
+        if (in_array($requestedActionName, self::CONTROLLER_ACTIONS_OPEN, true)) {
             return $proceed($request);
         }
 
@@ -112,7 +136,12 @@ class Authentication
         $this->autoLogin($request, $this->getLoginUsername());
 
         if ($request instanceof \Magento\Framework\App\Request\Http) {
-            $routePath = sprintf('%s/%s/%s', $request->getRouteName(), $request->getControllerName(), $request->getActionName());
+            $routePath = sprintf(
+                '%s/%s/%s',
+                $request->getRouteName(),
+                $request->getControllerName(),
+                $request->getActionName()
+            );
         } else {
             $routePath = 'adminhtml/dashboard';
         }
@@ -136,7 +165,7 @@ class Authentication
         $usernameList = array_keys($this->adminUserSource->toArray(false));
 
         foreach (self::DEFAULT_USERNAMES as $username) {
-            if (array_search($username, $usernameList, true) !== false) {
+            if (in_array($username, $usernameList, true)) {
                 return $username;
             }
         }
@@ -160,13 +189,12 @@ class Authentication
     private function autoLogin(\Magento\Framework\App\RequestInterface $request, $username)
     {
         $authStorage = $this->auth->getAuthStorage();
-        $user = $this->modelFactory->create('\Magento\Backend\Model\Auth\Credential\StorageInterface');
+        $user = $this->modelFactory->create(\Magento\Backend\Model\Auth\Credential\StorageInterface::class);
 
         $this->eventManager->dispatch('admin_user_authenticate_before', [
             'username' => $username,
             'user' => $user,
         ]);
-
         $user->loadByUsername($username);
 
         if (empty($user->getId())) {
@@ -175,7 +203,9 @@ class Authentication
 
         // check whether user is disabled
         if (!$user->getIsActive()) {
-            throw new AuthenticationException(__('You did not sign in correctly or your account is temporarily disabled.'));
+            throw new AuthenticationException(
+                __('You did not sign in correctly or your account is temporarily disabled.')
+            );
         }
 
         // check whether user is locked
@@ -184,7 +214,9 @@ class Authentication
         if ($lockExpires) {
             $lockExpires = new \DateTime($lockExpires);
             if ($lockExpires > new \DateTime()) {
-                throw new UserLockedException(__('You did not sign in correctly or your account is temporarily disabled.'));
+                throw new UserLockedException(
+                    __('You did not sign in correctly or your account is temporarily disabled.')
+                );
             }
         }
 
@@ -216,12 +248,14 @@ class Authentication
 
         try {
             /** @var \Magento\Security\Model\Plugin\Auth $plugin */
-            $plugin = \Magento\Framework\App\ObjectManager::getInstance()->get('\Magento\Security\Model\Plugin\Auth');
+            $plugin = \Magento\Framework\App\ObjectManager::getInstance()
+                ->get(\Magento\Security\Model\Plugin\Auth::class);
         } catch (\Exception $e) {
-            //ignore exception
+            ; //ignore exception
         }
 
-        // This is intentionally outside of the above try-catch because we only want to catch the failure to instantiate the plugin
+        // This is intentionally outside of the above try-catch because we only want to catch the failure to
+        // instantiate the plugin
         if ($plugin) {
             $plugin->afterLogin($auth);
         }
@@ -237,12 +271,14 @@ class Authentication
 
         try {
             /** @var \Magento\Security\Model\AdminSessionsManager $model */
-            $model = \Magento\Framework\App\ObjectManager::getInstance()->get('\Magento\Security\Model\AdminSessionsManager');
+            $model = \Magento\Framework\App\ObjectManager::getInstance()
+                ->get(\Magento\Security\Model\AdminSessionsManager::class);
         } catch (\Exception $e) {
-            //ignore exception
+            ; //ignore exception
         }
 
-        // This is intentionally outside of the above try-catch because we only want to catch the failure to instantiate the plugin
+        // This is intentionally outside of the above try-catch because we only want to catch the failure to
+        // instantiate the plugin
         if ($model) {
             $model->processLogin();
         }
