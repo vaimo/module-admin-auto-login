@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.4.3] - 2022-04-12
 ### Added 
 
-- Support for Magento 2.4.4 
+- Support for Magento 2.4.x 
 
 ## [1.4.2] - 2019-03-28
 ### Fixed
