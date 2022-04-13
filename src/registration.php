@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright © Vaimo Group. All rights reserved.
- * See LICENSE_VAIMO.txt for license details.
+ * See LICENSE for license details.
  */
 use \Magento\Framework\Component\ComponentRegistrar;
 
