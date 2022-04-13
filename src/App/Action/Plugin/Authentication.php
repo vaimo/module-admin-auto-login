@@ -141,27 +141,27 @@ class Authentication
         }
 
         $loginUserName = $this->getLoginUsername();
-        if (!empty($loginUserName)){
-            $this->autoLogin($request, $loginUserName);
 
-            if ($request instanceof \Magento\Framework\App\Request\Http) {
-                $routePath = sprintf(
-                    '%s/%s/%s',
-                    $request->getRouteName(),
-                    $request->getControllerName(),
-                    $request->getActionName()
-                );
-            } else {
-                $routePath = 'adminhtml/dashboard';
-            }
-
-            $resultRedirect = $this->resultRedirectFactory->create();
-            return $resultRedirect->setUrl($this->backendUrl->getUrl($routePath, $request->getParams()));
-
-        } else {
+        if (empty($loginUserName)) {
             $this->messageManager->addErrorMessage("Create an admin user for Vaimo_AdminAutoLogin to work!");
             return $proceed($request);
         }
+
+        $this->autoLogin($request, $loginUserName);
+
+        if ($request instanceof \Magento\Framework\App\Request\Http) {
+            $routePath = sprintf(
+                '%s/%s/%s',
+                $request->getRouteName(),
+                $request->getControllerName(),
+                $request->getActionName()
+            );
+        } else {
+            $routePath = 'adminhtml/dashboard';
+        }
+
+        $resultRedirect = $this->resultRedirectFactory->create();
+        return $resultRedirect->setUrl($this->backendUrl->getUrl($routePath, $request->getParams()));
     }
 
     /**
