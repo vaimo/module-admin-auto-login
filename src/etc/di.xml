@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Vaimo Group. All rights reserved.
+ * See LICENSE for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../lib/internal/Magento/Framework/ObjectManager/etc/config.xsd">
+    <type name="Magento\User\Model\Backend\Config\ObserverConfig">
+        <plugin name="vaimo_admin_auto_login_plugin_disable_password_change_request"
+                type="Vaimo\AdminAutoLogin\App\Action\Plugin\DisablePasswordChangeRequest"
+                sortOrder="10"
+                disabled="false"/>
+    </type>
+</config>
+
