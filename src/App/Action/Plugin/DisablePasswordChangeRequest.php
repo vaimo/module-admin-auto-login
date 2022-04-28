@@ -16,7 +16,6 @@ class DisablePasswordChangeRequest
      */
     private $config;
 
-
     /**
      * DisablePasswordChangeRequest constructor.
      *
@@ -28,7 +27,6 @@ class DisablePasswordChangeRequest
         $this->config = $scopeConfig;
     }
 
-
     /**
      * @param \Magento\User\Model\Backend\Config\ObserverConfig $subject
      * @param \Closure $proceed
@@ -36,7 +34,6 @@ class DisablePasswordChangeRequest
      */
     public function aroundGetAdminPasswordLifetime(\Magento\User\Model\Backend\Config\ObserverConfig $subject, $proceed)
     {
-
         // If admin_auto_login_module is inactive, get password lifetime normally.
         if (!$this->config->isSetFlag('admin/admin_auto_login/active')) {
             return $proceed();
@@ -47,7 +44,6 @@ class DisablePasswordChangeRequest
         return 86400 * 365 * 50;
     }
 
-
     /**
      * @param \Magento\User\Model\Backend\Config\ObserverConfig $subject
      * @param \Closure $proceed
@@ -55,7 +51,6 @@ class DisablePasswordChangeRequest
      */
     public function aroundIsPasswordChangeForced(\Magento\User\Model\Backend\Config\ObserverConfig $subject, $proceed)
     {
-
         if (!$this->config->isSetFlag('admin/admin_auto_login/active')) {
             return $proceed();
         }
@@ -64,7 +59,3 @@ class DisablePasswordChangeRequest
     }
 
 }
-
-
-
-
