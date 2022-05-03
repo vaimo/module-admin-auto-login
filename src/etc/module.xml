@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <!--
 /**
- * Copyright © 2009-2017 Vaimo Group. All rights reserved.
+ * Copyright © Vaimo Group. All rights reserved.
  * See LICENSE for license details.
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
-    <module name="Vaimo_AdminAutoLogin" setup_version="1.3.0">
+    <module name="Vaimo_AdminAutoLogin">
         <sequence>
             <module name="Magento_Backend"/>
         </sequence>

@@ -1,10 +1,11 @@
 <?php
 /**
- * Copyright © 2009-2017 Vaimo Group. All rights reserved.
+ * Copyright © Vaimo Group. All rights reserved.
  * See LICENSE for license details.
  */
-
 namespace Vaimo\AdminAutoLogin\Model\Config\Source;
+
+use function __;
 
 class AdminUser implements \Magento\Framework\Option\ArrayInterface
 {
@@ -19,6 +20,11 @@ class AdminUser implements \Magento\Framework\Option\ArrayInterface
      */
     private $users;
 
+    /**
+     * AdminUser constructor.
+     *
+     * @param \Magento\User\Model\ResourceModel\User\Collection $userCollection
+     */
     public function __construct(\Magento\User\Model\ResourceModel\User\Collection $userCollection)
     {
         $this->userCollection = $userCollection;
@@ -32,7 +38,7 @@ class AdminUser implements \Magento\Framework\Option\ArrayInterface
      */
     public function toArray($includeEmptyChoice = true)
     {
-        if (is_null($this->users)) {
+        if ($this->users === null) {
             $this->users = [];
 
             if ($includeEmptyChoice) {

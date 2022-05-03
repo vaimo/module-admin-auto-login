@@ -14,9 +14,11 @@
         "convenience"
     ],
     "autoload": {
-        "files": ["registration.php"],
+        "files": [
+            "src/registration.php"
+        ],
         "psr-4": {
-            "Vaimo\\AdminAutoLogin\\": ""
+            "Vaimo\\AdminAutoLogin\\": "src"
         }
     },
     "authors": [
