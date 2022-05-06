@@ -50,6 +50,11 @@ class Authentication
     private $eventManager;
 
     /**
+     * @var \Magento\Framework\Message\ManagerInterface
+     */
+    private $messageManager;
+
+    /**
      * @var \Magento\Framework\Data\Collection\ModelFactory
      */
     private $modelFactory;
@@ -84,6 +89,7 @@ class Authentication
         \Magento\Backend\Model\Auth $auth,
         \Magento\Backend\Model\UrlInterface $backendUrl,
         \Magento\Framework\Event\ManagerInterface $eventManager,
+        \Magento\Framework\Message\ManagerInterface $messageManager,
         \Magento\Framework\Data\Collection\ModelFactory $modelFactory,
         \Magento\Framework\Controller\Result\RedirectFactory $resultRedirectFactory,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
@@ -92,6 +98,7 @@ class Authentication
         $this->auth = $auth;
         $this->backendUrl = $backendUrl;
         $this->eventManager = $eventManager;
+        $this->messageManager = $messageManager;
         $this->modelFactory = $modelFactory;
         $this->resultRedirectFactory = $resultRedirectFactory;
         $this->config = $scopeConfig;
@@ -133,7 +140,14 @@ class Authentication
             return $proceed($request);
         }
 
-        $this->autoLogin($request, $this->getLoginUsername());
+        $loginUserName = $this->getLoginUsername();
+
+        if (empty($loginUserName)) {
+            $this->messageManager->addErrorMessage("Create an admin user for Vaimo_AdminAutoLogin to work!");
+            return $proceed($request);
+        }
+
+        $this->autoLogin($request, $loginUserName);
 
         if ($request instanceof \Magento\Framework\App\Request\Http) {
             $routePath = sprintf(
@@ -171,10 +185,6 @@ class Authentication
         }
 
         $username = reset($usernameList);
-
-        if (empty($username)) {
-            throw new \Exception('There are no admin users to attempt login to.');
-        }
 
         return $username;
     }
