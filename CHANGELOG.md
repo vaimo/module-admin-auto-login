@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [1.4.4] - 2022-05-06
+### Added
+
+- Disable password changing request if module is active
+- Handle "There are no admin users to attempt login to." error more gracefully
+
 ## [1.4.3] - 2022-05-03
 ### Added 
 
