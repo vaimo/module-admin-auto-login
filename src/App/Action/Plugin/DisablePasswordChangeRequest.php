@@ -56,5 +56,4 @@ class DisablePasswordChangeRequest
 
         return false;
     }
-
 }
