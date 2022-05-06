@@ -10,7 +10,6 @@ namespace Vaimo\AdminAutoLogin\App\Action\Plugin;
  */
 class DisablePasswordChangeRequest
 {
-
     /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
      */
