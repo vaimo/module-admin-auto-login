@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-## [1.4.3] - 2022-04-12
+## [1.4.3] - 2022-05-03
 ### Added 
 
 - Support for Magento 2.4.x 
