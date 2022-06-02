@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [1.4.5] - 2022-06-02
+### Fixed
+
+- Fix Magento Framework version requirements in composer.json to make module possibly to require with M2.4.x
+
 ## [1.4.4] - 2022-05-06
 ### Added
 
