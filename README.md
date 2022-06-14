@@ -5,9 +5,7 @@
 [![Daily Downloads](https://poser.pugx.org/vaimo/module-admin-auto-login/d/daily)](https://packagist.org/packages/vaimo/module-admin-auto-login)
 [![License](https://poser.pugx.org/vaimo/module-admin-auto-login/license)](https://packagist.org/packages/vaimo/module-admin-auto-login)
 
-This module bypasses the admin panel login screen, automatically logging in as
-the user provided in the configuration. Since it doesn't run any validations,
-this module should be used only on local environments (i.e.: not public).
+This module bypasses the admin panel login screen, automatically logging in as the user provided in the configuration. Since it doesn't run any validations, this module should be used only on local environments (i.e.: not public).
 
 ## Installation
 
@@ -21,12 +19,9 @@ Access the admin URL for the project. You should be logged in automatically.
 
 ## Configuration
 
-You can change the user to login in `Stores` > `Settings` > `Configuration` >
-`Advanced` > `Admin` > `Admin Auto Login`.
+You can change the user to login in `Stores` > `Settings` > `Configuration` > `Advanced` > `Admin` > `Admin Auto Login`.
 
-If no username is assigned in the admin pages, it will fallback to `jambi` or
-`admin` (in that order). If none of those are available, it will fallback to the
-first user it finds.
+If no username is assigned in the admin pages, it will fallback to `admin`. If it is not available, it will fallback to the first user it finds.
 
 ## Support
 
