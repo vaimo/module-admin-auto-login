@@ -283,10 +283,6 @@ class Authentication
         }
     }
 
-    /**
-     * Prolong session for M2.1+
-     * Intentional usage of Object Manager, since the class is not available on M2.0 and will throw an exception.
-     */
     private function prolongSession()
     {
         $this->adminSessionsManager->processLogin();
