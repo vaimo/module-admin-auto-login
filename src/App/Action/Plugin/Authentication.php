@@ -13,10 +13,8 @@ use function sprintf;
 use function array_keys;
 use function reset;
 
-
 class Authentication
 {
-
     /**
      * Default usernames to attempt login if there is no configuration
      */
@@ -193,7 +191,6 @@ class Authentication
         }
 
         $username = reset($usernameList);
-
         return $username;
     }
 
