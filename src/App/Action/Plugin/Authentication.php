@@ -250,36 +250,15 @@ class Authentication
         $authStorage->setUser($user);
         $authStorage->processLogin();
         $this->eventManager->dispatch('backend_auth_user_login_success', ['user' => $user]);
-        $this->populateAdminUserSessionTable($this->auth);
+        $this->populateAdminUserSessionTable();
         $authStorage->refreshAcl();
     }
 
-    /**
-     * Populates admin_user_session table for M2.1+
-     * Intentional usage of Object Manager, since the class is not available on M2.0 and will throw an exception.
-     *
-     * @param \Magento\Backend\Model\Auth $auth
-     */
-    private function populateAdminUserSessionTable(\Magento\Backend\Model\Auth $auth)
+    private function populateAdminUserSessionTable()
     {
-        $plugin = false;
-
-        /* TODO:
-         *  Don't use object manager to get plugin, just copy paste plugin code
-         *  DI to get sessionmanager
-         */
-        try {
-            /** @var \Magento\Security\Model\Plugin\Auth $plugin */
-            $plugin = \Magento\Framework\App\ObjectManager::getInstance()
-                ->get(\Magento\Security\Model\Plugin\Auth::class);
-        } catch (\Exception $e) {
-            ; //ignore exception
-        }
-
-        // This is intentionally outside of the above try-catch because we only want to catch the failure to
-        // instantiate the plugin
-        if ($plugin) {
-            $plugin->afterLogin($auth);
+        $this->adminSessionsManager->processLogin();
+        if ($this->adminSessionsManager->getCurrentSession()->isOtherSessionsTerminated()) {
+            $this->messageManager->addWarningMessage(__('All other open sessions for this account were terminated.'));
         }
     }
 
@@ -287,5 +266,4 @@ class Authentication
     {
         $this->adminSessionsManager->processLogin();
     }
-
 }
