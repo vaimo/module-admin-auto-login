@@ -7,6 +7,7 @@ namespace Vaimo\AdminAutoLogin\App\Action\Plugin;
 
 use Magento\Framework\Exception\AuthenticationException;
 use Magento\Framework\Exception\State\UserLockedException;
+use Magento\Security\Model\AdminSessionsManager;
 use function in_array;
 use function sprintf;
 use function array_keys;
@@ -14,12 +15,10 @@ use function reset;
 
 class Authentication
 {
-
     /**
      * Default usernames to attempt login if there is no configuration
      */
     private const DEFAULT_USERNAMES = [
-        'jambi',
         'admin',
     ];
 
@@ -75,15 +74,20 @@ class Authentication
     private $adminUserSource;
 
     /**
-     * Authentication constructor.
-     *
+     * @var AdminSessionsManager
+     */
+    private $adminSessionsManager;
+
+    /**
      * @param \Magento\Backend\Model\Auth $auth
      * @param \Magento\Backend\Model\UrlInterface $backendUrl
      * @param \Magento\Framework\Event\ManagerInterface $eventManager
+     * @param \Magento\Framework\Message\ManagerInterface $messageManager
      * @param \Magento\Framework\Data\Collection\ModelFactory $modelFactory
      * @param \Magento\Framework\Controller\Result\RedirectFactory $resultRedirectFactory
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Vaimo\AdminAutoLogin\Model\Config\Source\AdminUser $adminUserSource
+     * @param AdminSessionsManager $adminSessionsManager
      */
     public function __construct(
         \Magento\Backend\Model\Auth $auth,
@@ -93,7 +97,8 @@ class Authentication
         \Magento\Framework\Data\Collection\ModelFactory $modelFactory,
         \Magento\Framework\Controller\Result\RedirectFactory $resultRedirectFactory,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Vaimo\AdminAutoLogin\Model\Config\Source\AdminUser $adminUserSource
+        \Vaimo\AdminAutoLogin\Model\Config\Source\AdminUser $adminUserSource,
+        \Magento\Security\Model\AdminSessionsManager $adminSessionsManager
     ) {
         $this->auth = $auth;
         $this->backendUrl = $backendUrl;
@@ -103,6 +108,7 @@ class Authentication
         $this->resultRedirectFactory = $resultRedirectFactory;
         $this->config = $scopeConfig;
         $this->adminUserSource = $adminUserSource;
+        $this->adminSessionsManager = $adminSessionsManager;
     }
 
     /**
@@ -185,7 +191,6 @@ class Authentication
         }
 
         $username = reset($usernameList);
-
         return $username;
     }
 
@@ -242,56 +247,20 @@ class Authentication
         $authStorage->setUser($user);
         $authStorage->processLogin();
         $this->eventManager->dispatch('backend_auth_user_login_success', ['user' => $user]);
-        $this->populateAdminUserSessionTable($this->auth);
+        $this->populateAdminUserSessionTable();
         $authStorage->refreshAcl();
     }
 
-    /**
-     * Populates admin_user_session table for M2.1+
-     * Intentional usage of Object Manager, since the class is not available on M2.0 and will throw an exception.
-     *
-     * @param \Magento\Backend\Model\Auth $auth
-     */
-    private function populateAdminUserSessionTable(\Magento\Backend\Model\Auth $auth)
+    private function populateAdminUserSessionTable()
     {
-        $plugin = false;
-
-        try {
-            /** @var \Magento\Security\Model\Plugin\Auth $plugin */
-            $plugin = \Magento\Framework\App\ObjectManager::getInstance()
-                ->get(\Magento\Security\Model\Plugin\Auth::class);
-        } catch (\Exception $e) {
-            ; //ignore exception
-        }
-
-        // This is intentionally outside of the above try-catch because we only want to catch the failure to
-        // instantiate the plugin
-        if ($plugin) {
-            $plugin->afterLogin($auth);
+        $this->adminSessionsManager->processLogin();
+        if ($this->adminSessionsManager->getCurrentSession()->isOtherSessionsTerminated()) {
+            $this->messageManager->addWarningMessage(__('All other open sessions for this account were terminated.'));
         }
     }
 
-    /**
-     * Prolong session for M2.1+
-     * Intentional usage of Object Manager, since the class is not available on M2.0 and will throw an exception.
-     */
     private function prolongSession()
     {
-        $model = false;
-
-        try {
-            /** @var \Magento\Security\Model\AdminSessionsManager $model */
-            $model = \Magento\Framework\App\ObjectManager::getInstance()
-                ->get(\Magento\Security\Model\AdminSessionsManager::class);
-        } catch (\Exception $e) {
-            ; //ignore exception
-        }
-
-        // This is intentionally outside of the above try-catch because we only want to catch the failure to
-        // instantiate the plugin
-        if ($model) {
-            $model->processLogin();
-        }
+        $this->adminSessionsManager->processLogin();
     }
-
 }

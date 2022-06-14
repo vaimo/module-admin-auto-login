@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Changed 
+
+- Dropped support for Magento 2.0
 
 ## [1.4.5] - 2022-06-02
 ### Fixed
