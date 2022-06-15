@@ -203,7 +203,6 @@ class Authentication
      */
     private function autoLogin(\Magento\Framework\App\RequestInterface $request, $username)
     {
-        $authStorage = $this->auth->getAuthStorage();
         $user = $this->modelFactory->create(\Magento\Backend\Model\Auth\Credential\StorageInterface::class);
 
         $this->eventManager->dispatch('admin_user_authenticate_before', [
@@ -242,7 +241,12 @@ class Authentication
             'result' => true,
         ]);
 
-        // Handle login
+        $this->handleLogin($user);
+    }
+
+    private function handleLoginxx($user)
+    {
+        $authStorage = $this->auth->getAuthStorage();
         $user->getResource()->recordLogin($user);
         $authStorage->setUser($user);
         $authStorage->processLogin();
