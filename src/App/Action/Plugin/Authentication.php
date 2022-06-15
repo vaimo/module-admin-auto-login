@@ -244,7 +244,7 @@ class Authentication
         $this->handleLogin($user);
     }
 
-    private function handleLoginxx($user)
+    private function handleLogin($user)
     {
         $authStorage = $this->auth->getAuthStorage();
         $user->getResource()->recordLogin($user);
