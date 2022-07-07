@@ -5,11 +5,8 @@
  */
 namespace Vaimo\AdminAutoLogin\Model\Config\Source;
 
-use function __;
-
-class AdminUser implements \Magento\Framework\Option\ArrayInterface
+class AdminUsernameList
 {
-
     /**
      * @var \Magento\User\Model\ResourceModel\User\Collection
      */
@@ -21,12 +18,13 @@ class AdminUser implements \Magento\Framework\Option\ArrayInterface
     private $users;
 
     /**
-     * AdminUser constructor.
+     * AdminUsernameList constructor.
      *
      * @param \Magento\User\Model\ResourceModel\User\Collection $userCollection
      */
-    public function __construct(\Magento\User\Model\ResourceModel\User\Collection $userCollection)
-    {
+    public function __construct(
+        \Magento\User\Model\ResourceModel\User\Collection $userCollection
+    ) {
         $this->userCollection = $userCollection;
     }
 
@@ -36,7 +34,7 @@ class AdminUser implements \Magento\Framework\Option\ArrayInterface
      * @param bool $includeEmptyChoice
      * @return array
      */
-    public function toArray($includeEmptyChoice = true)
+    public function get($includeEmptyChoice = true)
     {
         if ($this->users === null) {
             $this->users = [];
@@ -54,22 +52,6 @@ class AdminUser implements \Magento\Framework\Option\ArrayInterface
         }
 
         return $this->users;
-    }
-
-    /**
-     * Options getter
-     *
-     * @return array
-     */
-    public function toOptionArray()
-    {
-        $users = [];
-
-        foreach ($this->toArray() as $value => $label) {
-            $users[] = ['value' => $value, 'label' => $label];
-        }
-
-        return $users;
     }
 
 }

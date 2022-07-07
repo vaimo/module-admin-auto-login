@@ -69,9 +69,9 @@ class Authentication
     private $config;
 
     /**
-     * @var \Vaimo\AdminAutoLogin\Model\Config\Source\AdminUser
+     * @var \Vaimo\AdminAutoLogin\Model\Config\Source\AdminUsernameList
      */
-    private $adminUserSource;
+    private $adminUsernameList;
 
     /**
      * @var AdminSessionsManager
@@ -86,19 +86,19 @@ class Authentication
      * @param \Magento\Framework\Data\Collection\ModelFactory $modelFactory
      * @param \Magento\Framework\Controller\Result\RedirectFactory $resultRedirectFactory
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
-     * @param \Vaimo\AdminAutoLogin\Model\Config\Source\AdminUser $adminUserSource
+     * @param \Vaimo\AdminAutoLogin\Model\Config\Source\AdminUsernameList $adminUsernameList
      * @param AdminSessionsManager $adminSessionsManager
      */
     public function __construct(
-        \Magento\Backend\Model\Auth $auth,
-        \Magento\Backend\Model\UrlInterface $backendUrl,
-        \Magento\Framework\Event\ManagerInterface $eventManager,
-        \Magento\Framework\Message\ManagerInterface $messageManager,
-        \Magento\Framework\Data\Collection\ModelFactory $modelFactory,
-        \Magento\Framework\Controller\Result\RedirectFactory $resultRedirectFactory,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Vaimo\AdminAutoLogin\Model\Config\Source\AdminUser $adminUserSource,
-        \Magento\Security\Model\AdminSessionsManager $adminSessionsManager
+        \Magento\Backend\Model\Auth                                 $auth,
+        \Magento\Backend\Model\UrlInterface                         $backendUrl,
+        \Magento\Framework\Event\ManagerInterface                   $eventManager,
+        \Magento\Framework\Message\ManagerInterface                 $messageManager,
+        \Magento\Framework\Data\Collection\ModelFactory             $modelFactory,
+        \Magento\Framework\Controller\Result\RedirectFactory        $resultRedirectFactory,
+        \Magento\Framework\App\Config\ScopeConfigInterface          $scopeConfig,
+        \Vaimo\AdminAutoLogin\Model\Config\Source\AdminUsernameList $adminUsernameList,
+        \Magento\Security\Model\AdminSessionsManager                $adminSessionsManager
     ) {
         $this->auth = $auth;
         $this->backendUrl = $backendUrl;
@@ -107,7 +107,7 @@ class Authentication
         $this->modelFactory = $modelFactory;
         $this->resultRedirectFactory = $resultRedirectFactory;
         $this->config = $scopeConfig;
-        $this->adminUserSource = $adminUserSource;
+        $this->adminUsernameList = $adminUsernameList;
         $this->adminSessionsManager = $adminSessionsManager;
     }
 
@@ -182,7 +182,7 @@ class Authentication
             return $username;
         }
 
-        $usernameList = array_keys($this->adminUserSource->toArray(false));
+        $usernameList = array_keys($this->adminUsernameList->get(false));
 
         foreach (self::DEFAULT_USERNAMES as $username) {
             if (in_array($username, $usernameList, true)) {
